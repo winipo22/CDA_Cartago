@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDA Cartago - Cotizador, Agendamiento & Chatbot IA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            950: '#022c22',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(6, 78, 59, 0.75);
+            backdrop-filter: blur(12px);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 text-white text-xs py-2 px-4 text-center font-medium flex items-center justify-between">
+        <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+            <span class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Atención HOY sin fila en Línea de Motos y Vehículos Livianos</span>
+            </span>
+            <div class="hidden md:flex items-center gap-4 text-[11px]">
+                <span><i class="fa-solid fa-location-dot text-emerald-300 mr-1"></i> Variante Cartago - Zaragoza Km 1.5</span>
+                <span><i class="fa-solid fa-phone text-emerald-300 mr-1"></i> (602) 211-0000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" onclick="playSound('click')" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-car-rear text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                        CDA CARTAGO <span class="bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300/50">ONAC</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Centro de Diagnóstico Automotor S.A.S.</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-8 font-medium text-sm text-slate-600 dark:text-slate-300">
+                <a href="#cotizador" onclick="playSound('click')" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Cotizador</a>
+                <a href="#agendamiento" onclick="playSound('click')" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Agendar Cita</a>
+                <a href="#consulta-placa" onclick="playSound('click')" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Estado por Placa</a>
+                <a href="#tarifas" onclick="playSound('click')" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Tarifas Reguladas</a>
+                <a href="#contacto" onclick="playSound('click')" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Ubicación</a>
+            </nav>
+
+            <!-- Actions Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Sound Toggle -->
+                <button onclick="toggleAudio()" id="audio-btn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-xs flex items-center gap-1.5" title="Activar/Desactivar Sonido">
+                    <i id="audio-icon" class="fa-solid fa-volume-high text-emerald-600 dark:text-emerald-400"></i>
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-xs" title="Cambiar Tema">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Quick CTA -->
+                <a href="#agendamiento" onclick="playSound('click')" class="hidden sm:inline-flex bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition-all items-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-sm"></i>
+                    <span>Agendar Cita</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- HERO SECTION -->
+        <section class="relative bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white py-20 px-4 sm:px-6 overflow-hidden">
+            <!-- Background Glow -->
+            <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold backdrop-blur-sm">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Inspección Autorizada MinTransporte & RUNT</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                        Seguridad y Transparencia para tu <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200">MOTO o CARRO</span>
+                    </h1>
+
+                    <p class="text-slate-300 text-base sm:text-lg max-w-2xl font-light leading-relaxed">
+                        Cotiza tu Revisión Tecnomecánica (RTM) y SOAT en tiempo real con las tarifas oficiales reguladas de Colombia. Reserva tu turno rápido y sin complicaciones en Cartago.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#cotizador" onclick="playSound('click')" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-500/25 transition-all text-center flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator text-lg"></i>
+                            <span>Cotizar RTM & SOAT</span>
+                        </a>
+                        <a href="#consulta-placa" onclick="playSound('click')" class="w-full sm:w-auto bg-slate-800/80 hover:bg-slate-700 text-white font-semibold px-8 py-4 rounded-2xl border border-slate-700 transition-all text-center flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-emerald-400"></i>
+                            <span>Consultar Estado por Placa</span>
+                        </a>
+                    </div>
+
+                    <!-- Metrics Badges -->
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-slate-800/80 text-center lg:text-left">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-white">15+ Años</p>
+                            <p class="text-xs text-slate-400">Servicio en Cartago</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400">100%</p>
+                            <p class="text-xs text-slate-400">Acreditados ONAC</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-white">&lt; 35 Min</p>
+                            <p class="text-xs text-slate-400">Tiempo de Inspección</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Quick Widget Card -->
+                <div class="lg:col-span-5">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                        <h3 class="text-xl font-bold text-white mb-2 flex items-center justify-between">
+                            <span>Consulta Rápida de Tarifas</span>
+                            <span class="text-xs text-emerald-400 font-mono font-normal">2026 Vigente</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-6">Selecciona tu tipo de vehículo para un cálculo instantáneo.</p>
+
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="quickSelectVehicle('moto')" class="p-4 rounded-2xl bg-slate-800 hover:bg-emerald-900/40 border border-slate-700 hover:border-emerald-500/50 text-left transition-all group">
+                                    <i class="fa-solid fa-motorcycle text-emerald-400 text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                                    <p class="font-bold text-sm text-white">Motos</p>
+                                    <p class="text-[11px] text-slate-400">Desde $233.500</p>
+                                </button>
+                                <button onclick="quickSelectVehicle('particular')" class="p-4 rounded-2xl bg-slate-800 hover:bg-emerald-900/40 border border-slate-700 hover:border-emerald-500/50 text-left transition-all group">
+                                    <i class="fa-solid fa-car text-emerald-400 text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                                    <p class="font-bold text-sm text-white">Particular</p>
+                                    <p class="text-[11px] text-slate-400">Desde $357.500</p>
+                                </button>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-800/80 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-emerald-300 font-semibold">¿Necesitas SOAT urgente?</p>
+                                    <p class="text-[11px] text-emerald-200/70">Expedición digital inmediata en RUNT</p>
+                                </div>
+                                <a href="#cotizador" onclick="playSound('click')" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs hover:bg-emerald-400 transition-colors">
+                                    Calcular
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: COTIZADOR INTERACTIVO -->
+        <section id="cotizador" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">Calculadora Oficial 2026</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1">Cotizador En Vivo RTM & SOAT</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Valores desglosados conforme a las resoluciones del Ministerio de Transporte, SICOV, RUNT e IVA.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <!-- Form Parameters -->
+                <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-slate-700 dark:text-slate-300">1. Tipo de Vehículo</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <button type="button" onclick="setCotizadorType('moto')" id="btn-type-moto" class="cotiz-type-btn p-3 rounded-2xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs flex flex-col items-center gap-2 transition-all">
+                                <i class="fa-solid fa-motorcycle text-xl"></i>
+                                <span>Moto</span>
+                            </button>
+                            <button type="button" onclick="setCotizadorType('particular')" id="btn-type-particular" class="cotiz-type-btn p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-xs flex flex-col items-center gap-2 transition-all">
+                                <i class="fa-solid fa-car text-xl"></i>
+                                <span>Particular</span>
+                            </button>
+                            <button type="button" onclick="setCotizadorType('publico')" id="btn-type-publico" class="cotiz-type-btn p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-xs flex flex-col items-center gap-2 transition-all">
+                                <i class="fa-solid fa-taxi text-xl"></i>
+                                <span>Público / Taxi</span>
+                            </button>
+                            <button type="button" onclick="setCotizadorType('pesado')" id="btn-type-pesado" class="cotiz-type-btn p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-xs flex flex-col items-center gap-2 transition-all">
+                                <i class="fa-solid fa-truck-front text-xl"></i>
+                                <span>Pesado / Carga</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Engine Size / Subtype -->
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold mb-2 text-slate-700 dark:text-slate-300">Cilindraje (cc) / Subtipo</label>
+                            <select id="cotiz-subtype" onchange="calculateQuote()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="moto_2t">Moto 2 Tiempos (Todas)</option>
+                                <option value="moto_4t_less100">Moto 4T (&lt; 100 cc)</option>
+                                <option value="moto_4t_100_200" selected>Moto 4T (100 cc - 200 cc)</option>
+                                <option value="moto_4t_plus200">Moto 4T (&gt; 200 cc)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-2 text-slate-700 dark:text-slate-300">Modelo del Vehículo (Año)</label>
+                            <select id="cotiz-year" onchange="calculateQuote()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="2025">2025 / 2026 (Nuevo)</option>
+                                <option value="2020" selected>2016 - 2024 (Entre 2 y 10 años)</option>
+                                <option value="2010">2015 o anterior (Más de 10 años)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Services Included Toggles -->
+                    <div>
+                        <label class="block text-xs font-bold mb-2 text-slate-700 dark:text-slate-300">Servicios requeridos</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 cursor-pointer">
+                                <span class="flex items-center gap-2 text-xs font-semibold">
+                                    <i class="fa-solid fa-wrench text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Revisión Tecnomecánica (RTM) + SICOV</span>
+                                </span>
+                                <input type="checkbox" id="chk-rtm" checked onchange="calculateQuote()" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                            </label>
+                            <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 cursor-pointer">
+                                <span class="flex items-center gap-2 text-xs font-semibold">
+                                    <i class="fa-solid fa-file-shield text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Seguro Obligatorio SOAT (SURA / Previsora)</span>
+                                </span>
+                                <input type="checkbox" id="chk-soat" checked onchange="calculateQuote()" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculation Summary Result Card -->
+                <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-emerald-950 text-white p-6 sm:p-8 rounded-3xl border border-emerald-800/60 shadow-xl relative overflow-hidden">
+                    <div class="flex items-center justify-between pb-4 border-b border-emerald-800/80">
+                        <span class="text-xs font-semibold text-emerald-300 uppercase tracking-wider">Resumen de Liquidación</span>
+                        <span class="text-[10px] bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-2.5 py-0.5 rounded-full">CDA Cartago</span>
+                    </div>
+
+                    <div class="py-6 space-y-3 text-xs">
+                        <div class="flex justify-between text-slate-300">
+                            <span>Inspección RTM (Base CDA)</span>
+                            <span id="res-base-rtm" class="font-mono">$0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Derechos RUNT & SICOV</span>
+                            <span id="res-runt-sicov" class="font-mono">$0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Fondo Prevención Vial / IVA (19%)</span>
+                            <span id="res-iva" class="font-mono">$0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300 pb-3 border-b border-emerald-800/50">
+                            <span>Poliza SOAT Regulada</span>
+                            <span id="res-soat" class="font-mono">$0</span>
+                        </div>
+
+                        <div class="pt-2 flex items-baseline justify-between">
+                            <div>
+                                <p class="text-xs text-emerald-400 font-bold uppercase">Total a Pagar</p>
+                                <p class="text-[10px] text-slate-400">Sin recargos ocultos</p>
+                            </div>
+                            <span id="res-total" class="text-3xl font-black text-emerald-300 font-mono">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <button onclick="transferQuoteToScheduler()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-calendar-plus text-sm"></i>
+                            <span>Agendar Cita con esta Cotización</span>
+                        </button>
+                        <p class="text-[10px] text-slate-400 text-center"><i class="fa-solid fa-circle-info mr-1 text-emerald-400"></i> Cotización válida para pago en caja o PSE.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MULTI-STEP APPOINTMENT SCHEDULER -->
+        <section id="agendamiento" class="py-16 bg-slate-100 dark:bg-slate-900/60 border-y border-slate-200 dark:border-slate-800 px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">Turno Preferencial</span>
+                    <h2 class="text-3xl font-extrabold tracking-tight mt-1">Agendamiento de Citas en Línea</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">Completa los datos y asegura tu turno inmediato sin hacer filas en la sede Cartago.</p>
+                </div>
+
+                <!-- Wizard Progress Bar -->
+                <div class="mb-8 flex justify-between items-center relative max-w-xl mx-auto">
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-300 dark:bg-slate-700 -z-0"></div>
+                    <div id="step-bar-fill" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-emerald-500 transition-all duration-300 -z-0 w-1/3"></div>
+
+                    <div id="step-dot-1" class="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center relative z-10 shadow-md">1</div>
+                    <div id="step-dot-2" class="w-9 h-9 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center relative z-10 shadow-md">2</div>
+                    <div id="step-dot-3" class="w-9 h-9 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center relative z-10 shadow-md">3</div>
+                </div>
+
+                <!-- Wizard Card Container -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-lg">
+                    
+                    <!-- STEP 1: VEHICLE & SERVICE -->
+                    <div id="sched-step-1" class="space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-car text-emerald-600"></i>
+                            <span>Paso 1: Datos del Vehículo</span>
+                        </h3>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Placa del Vehículo</label>
+                                <input type="text" id="sched-plate" placeholder="EJ: ABC123" uppercase class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-none uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Categoría</label>
+                                <select id="sched-category" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <option value="Moto">Motocicleta / Motocarro</option>
+                                    <option value="Particular">Automóvil Particular / Camioneta</option>
+                                    <option value="Publico">Público / Taxi / Servicio Especial</option>
+                                    <option value="Pesado">Camión / Pesado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-4">
+                            <button onclick="nextSchedStep(2)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl text-xs flex items-center gap-2">
+                                <span>Siguiente: Fecha y Hora</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: DATE & TIME SELECTOR -->
+                    <div id="sched-step-2" class="hidden space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-emerald-600"></i>
+                            <span>Paso 2: Selección de Fecha y Hora</span>
+                        </h3>
+
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Selecciona Fecha</label>
+                                <input type="date" id="sched-date" onchange="generateTimeSlots()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Turnos Disponibles</label>
+                                <div id="time-slots-grid" class="grid grid-cols-3 gap-2">
+                                    <!-- Dynamic Slots -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+                            <button onclick="nextSchedStep(1)" class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-6 py-3 rounded-xl text-xs">Anterior</button>
+                            <button onclick="nextSchedStep(3)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl text-xs flex items-center gap-2">
+                                <span>Siguiente: Datos de Contacto</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: CONTACT & CONFIRMATION -->
+                    <div id="sched-step-3" class="hidden space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-user-check text-emerald-600"></i>
+                            <span>Paso 3: Datos del Propietario / Conductor</span>
+                        </h3>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Nombre Completo</label>
+                                <input type="text" id="sched-name" placeholder="Juan Pérez" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Cédula / NIT</label>
+                                <input type="text" id="sched-doc" placeholder="1012345678" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Teléfono Celular / WhatsApp</label>
+                                <input type="tel" id="sched-phone" placeholder="315 123 4567" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1.5">Correo Electrónico</label>
+                                <input type="email" id="sched-email" placeholder="correo@ejemplo.com" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300">
+                            <i class="fa-solid fa-lock mr-1"></i> Recibirás confirmación inmediata vía WhatsApp y correo con el código QR de ingreso rápido.
+                        </div>
+
+                        <div class="flex justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+                            <button onclick="nextSchedStep(2)" class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-6 py-3 rounded-xl text-xs">Anterior</button>
+                            <button onclick="submitAppointment()" class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold px-8 py-3.5 rounded-xl text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-sm"></i>
+                                <span>Confirmar Agendamiento</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: SUCCESS CONFIRMATION MODAL STATE -->
+                    <div id="sched-step-4" class="hidden text-center space-y-6 py-6">
+                        <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-300 flex items-center justify-center text-3xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900 dark:text-white">¡Cita Agendada Con Éxito!</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Te esperamos en la sede CDA Cartago en la fecha y hora seleccionada.</p>
+                        </div>
+
+                        <div id="sched-receipt-card" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-left max-w-md mx-auto space-y-2 text-xs">
+                            <!-- Populated via JS -->
+                        </div>
+
+                        <div class="flex justify-center gap-3">
+                            <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white font-bold text-xs">
+                                <i class="fa-solid fa-print mr-1"></i> Imprimir Comprobante
+                            </button>
+                            <button onclick="resetSchedWizard()" class="px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs">
+                                Nuevo Agendamiento
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: QUERY PLATE STATUS -->
+        <section id="consulta-placa" class="py-16 px-4 sm:px-6 max-w-5xl mx-auto">
+            <div class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-emerald-800/50">
+                <div class="max-w-2xl mx-auto text-center space-y-4">
+                    <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-semibold border border-emerald-500/30">RUNT / CDA Live Check</span>
+                    <h2 class="text-3xl font-black">Consulta el Estado RTM & SOAT de tu Placa</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">Ingresa tu placa para verificar vencimiento, historiales de inspección técnica e idoneidad de gases.</p>
+
+                    <form onsubmit="handlePlateLookup(event)" class="flex flex-col sm:flex-row gap-3 pt-4">
+                        <input type="text" id="lookup-plate-input" placeholder="PLACA (Ej: ABC123)" uppercase maxlength="7" class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-center sm:text-left text-lg font-mono font-bold tracking-widest text-white uppercase focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-2xl text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Consultar Ahora</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Result Box -->
+                <div id="plate-lookup-result" class="hidden mt-8 p-6 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-4 animate-fade-in">
+                    <!-- Dynamic Lookup Content -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: TARIFA TABLES -->
+        <section id="tarifas" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">Transparencia Total</span>
+                <h2 class="text-3xl font-extrabold tracking-tight mt-1">Tabla Oficial de Tarifas Reguladas 2026</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">Valores tope regulados conforme a la normatividad colombiana del Sector Transporte.</p>
+            </div>
+
+            <div class="overflow-x-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold uppercase text-[11px] border-b border-slate-200 dark:border-slate-800">
+                        <tr>
+                            <th class="p-4 sm:p-5">Tipo de Vehículo</th>
+                            <th class="p-4 sm:p-5">Cilindraje / Edad</th>
+                            <th class="p-4 sm:p-5">RTM Estimada</th>
+                            <th class="p-4 sm:p-5">SOAT Regulado</th>
+                            <th class="p-4 sm:p-5 text-right">Rango Total 2026</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                            <td class="p-4 sm:p-5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-motorcycle text-emerald-600"></i> Motocicleta
+                            </td>
+                            <td class="p-4 sm:p-5">100 cc a 200 cc</td>
+                            <td class="p-4 sm:p-5">$233.500</td>
+                            <td class="p-4 sm:p-5">$310.200</td>
+                            <td class="p-4 sm:p-5 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">$543.700</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                            <td class="p-4 sm:p-5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-car text-emerald-600"></i> Automóvil Particular
+                            </td>
+                            <td class="p-4 sm:p-5">1.500 cc a 2.500 cc (2-10 yrs)</td>
+                            <td class="p-4 sm:p-5">$357.500</td>
+                            <td class="p-4 sm:p-5">$520.100</td>
+                            <td class="p-4 sm:p-5 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">$877.600</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                            <td class="p-4 sm:p-5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-taxi text-emerald-600"></i> Servicio Público / Taxi
+                            </td>
+                            <td class="p-4 sm:p-5">&lt; 1.500 cc (2 a 10 yrs)</td>
+                            <td class="p-4 sm:p-5">$356.900</td>
+                            <td class="p-4 sm:p-5">$315.400</td>
+                            <td class="p-4 sm:p-5 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">$672.300</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                            <td class="p-4 sm:p-5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-truck-front text-emerald-600"></i> Pesado / Carga
+                            </td>
+                            <td class="p-4 sm:p-5">&gt; 5 Toneladas</td>
+                            <td class="p-4 sm:p-5 font-bold text-emerald-600">$512.000</td>
+                            <td class="p-4 sm:p-5">$940.800</td>
+                            <td class="p-4 sm:p-5 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">$1.452.800</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 5: LOCATION & CONTACT -->
+        <section id="contacto" class="py-16 bg-slate-100 dark:bg-slate-900/60 border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">Visítanos en Cartago</span>
+                    <h2 class="text-3xl font-extrabold tracking-tight">Instalaciones Modernas y Equipamiento Aleman MAHA</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Contamos con 3 líneas de inspección mecanizada computarizada para garantizar precisión total en frenometría, alineación, detección de holguras y opacimetría/gases.
+                    </p>
+
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">Dirección</p>
+                                <p class="text-slate-500 dark:text-slate-400">Variante Cartago - Zaragoza Km 1.5, Cartago, Valle del Cauca</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">Horario de Atención</p>
+                                <p class="text-slate-500 dark:text-slate-400">Lunes a Viernes: 7:00 AM - 5:30 PM | Sábados: 7:00 AM - 3:00 PM</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">Líneas Telefónicas / WhatsApp</p>
+                                <p class="text-slate-500 dark:text-slate-400">(602) 211-0000 | +57 315 000 0000</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mock Map visual -->
+                <div class="bg-slate-800 rounded-3xl h-80 relative overflow-hidden border border-slate-700 flex items-center justify-center text-center p-6 shadow-xl">
+                    <div class="absolute inset-0 bg-emerald-950/40 backdrop-blur-xs"></div>
+                    <div class="relative z-10 space-y-3">
+                        <i class="fa-solid fa-map-location-dot text-5xl text-emerald-400 animate-bounce"></i>
+                        <h4 class="text-lg font-bold text-white">Sede CDA Cartago</h4>
+                        <p class="text-xs text-slate-300 max-w-xs">Variante Zaragoza Km 1.5 (Frente a la Estación de Servicio)</p>
+                        <a href="https://maps.google.com" target="_blank" class="inline-block px-5 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs hover:bg-emerald-400 transition-colors">
+                            Abrir en Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 text-xs py-8 px-4 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 CDA Cartago S.A.S. - Todos los derechos reservados.</p>
+            <p class="flex items-center gap-2">
+                <span>Acreditado ONAC Cód. 15-OIN-042</span> | <span>MinTransporte Res. 00382</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- AI CHATBOT FLOATING WIDGET WITH NVIDIA API -->
+    <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50">
+        <!-- Floating Toggle Button -->
+        <button onclick="toggleChatWindow()" id="chat-toggle-btn" class="glow-emerald bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110">
+            <i id="chat-icon-open" class="fa-solid fa-robot text-2xl"></i>
+            <i id="chat-icon-close" class="fa-solid fa-xmark text-2xl hidden"></i>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden absolute bottom-16 right-0 w-[92vw] sm:w-[400px] h-[560px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-emerald-800/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+            
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 p-4 text-white flex items-center justify-between border-b border-emerald-800/60">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-sm shadow-md">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xs leading-tight flex items-center gap-1">
+                            <span>Asistente IA Cartago</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded">NVIDIA Llama 3.1</span>
+                        </h3>
+                        <p id="chat-status" class="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>API NVIDIA Conectada</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleKeySettings()" class="text-slate-400 hover:text-white text-xs p-1" title="Configurar API Key">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                    <button onclick="toggleChatWindow()" class="text-slate-400 hover:text-white text-xs p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Optional Key Config Bar -->
+            <div id="key-settings-panel" class="hidden p-3 bg-slate-800 text-white text-[11px] border-b border-slate-700 space-y-1">
+                <p class="font-semibold text-emerald-400">NVIDIA API Key activa:</p>
+                <div class="flex gap-2">
+                    <input id="key-input" type="password" value="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" class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none font-mono">
+                    <button onclick="updateKey()" class="bg-emerald-500 text-slate-950 px-2.5 py-1 rounded font-bold">Guardar</button>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 custom-scrollbar text-xs">
+                <div class="flex gap-2 items-start">
+                    <div class="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-robot text-xs"></i>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[82%] border border-slate-200 dark:border-slate-700">
+                        ¡Hola! 👋 Soy el Asistente IA de **CDA Cartago**. ¿Tienes inquietudes sobre tarifas RTM/SOAT, horarios, requisitos o agendamiento para tu vehículo?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Chips -->
+            <div class="px-3 py-2 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-1.5 overflow-x-auto whitespace-nowrap text-[10px] custom-scrollbar">
+                <button onclick="sendQuickChip('¿Cuáles son las tarifas de motos?')" class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 transition-colors">Tarifas Moto</button>
+                <button onclick="sendQuickChip('¿Qué documentos debo llevar a la inspección?')" class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 transition-colors">Requisitos RTM</button>
+                <button onclick="sendQuickChip('¿Dónde están ubicados en Cartago?')" class="px-2.5 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 transition-colors">Ubicación</button>
+            </div>
+
+            <!-- Form Input -->
+            <div class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+                <form onsubmit="handleSendChatMessage(event)" class="flex items-center gap-2">
+                    <input id="chat-input" type="text" placeholder="Escribe tu pregunta..." class="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all font-bold">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        // --- 1. AUDIO FEEDBACK SYSTEM (Web Audio API) ---
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('audio-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-emerald-600 dark:text-emerald-400';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(580, now);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'chat') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(700, now);
+                    osc.frequency.setValueAtTime(950, now + 0.06);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {
+                console.warn('Audio play error:', e);
+            }
+        }
+
+        // --- 2. DARK MODE TOGGLE ---
+        function toggleDarkMode() {
+            playSound('click');
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+        }
+
+        // --- 3. COTIZADOR LOGIC ---
+        let currentVehicleType = 'moto';
+
+        const COTIZADOR_DATA = {
+            moto: {
+                options: [
+                    { id: 'moto_2t', name: 'Moto 2 Tiempos (Todas)', baseRtm: 155000, runt: 38500, iva: 40000, soat: 310200 },
+                    { id: 'moto_4t_less100', name: 'Moto 4T (< 100 cc)', baseRtm: 150000, runt: 38500, iva: 38000, soat: 233500 },
+                    { id: 'moto_4t_100_200', name: 'Moto 4T (100 cc - 200 cc)', baseRtm: 155000, runt: 38500, iva: 40000, soat: 310200 },
+                    { id: 'moto_4t_plus200', name: 'Moto 4T (> 200 cc)', baseRtm: 155000, runt: 38500, iva: 40000, soat: 732000 }
+                ]
+            },
+            particular: {
+                options: [
+                    { id: 'part_less1500', name: 'Automóvil Particular (< 1.500 cc)', baseRtm: 240000, runt: 52000, iva: 65500, soat: 440200 },
+                    { id: 'part_1500_2500', name: 'Automóvil Particular (1.500 - 2.500 cc)', baseRtm: 240000, runt: 52000, iva: 65500, soat: 520100 },
+                    { id: 'part_plus2500', name: 'Automóvil Particular (> 2.500 cc)', baseRtm: 250000, runt: 52000, iva: 67400, soat: 615000 }
+                ]
+            },
+            publico: {
+                options: [
+                    { id: 'pub_taxi', name: 'Taxi / Servicio Público Urbano', baseRtm: 239000, runt: 52000, iva: 65900, soat: 315400 },
+                    { id: 'pub_inter', name: 'Bus / Intermunicipal', baseRtm: 310000, runt: 52000, iva: 82000, soat: 580000 }
+                ]
+            },
+            pesado: {
+                options: [
+                    { id: 'pes_carga', name: 'Camión de Carga (> 5 Ton)', baseRtm: 350000, runt: 55000, iva: 107000, soat: 940800 }
+                ]
+            }
+        };
+
+        function setCotizadorType(type) {
+            playSound('click');
+            currentVehicleType = type;
+            
+            // Highlight buttons
+            document.querySelectorAll('.cotiz-type-btn').forEach(btn => {
+                btn.className = 'cotiz-type-btn p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-xs flex flex-col items-center gap-2 transition-all';
+            });
+            const selectedBtn = document.getElementById(`btn-type-${type}`);
+            if (selectedBtn) {
+                selectedBtn.className = 'cotiz-type-btn p-3 rounded-2xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs flex flex-col items-center gap-2 transition-all';
+            }
+
+            // Populate Subtypes
+            const select = document.getElementById('cotiz-subtype');
+            select.innerHTML = '';
+            COTIZADOR_DATA[type].options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.id;
+                el.textContent = opt.name;
+                select.appendChild(el);
+            });
+
+            calculateQuote();
+        }
+
+        function calculateQuote() {
+            const subtypeVal = document.getElementById('cotiz-subtype').value;
+            const chkRtm = document.getElementById('chk-rtm').checked;
+            const chkSoat = document.getElementById('chk-soat').checked;
+
+            let foundOpt = null;
+            Object.keys(COTIZADOR_DATA).forEach(cat => {
+                COTIZADOR_DATA[cat].options.forEach(opt => {
+                    if (opt.id === subtypeVal) foundOpt = opt;
+                });
+            });
+
+            if (!foundOpt) return;
+
+            const baseRtm = chkRtm ? foundOpt.baseRtm : 0;
+            const runtSicov = chkRtm ? foundOpt.runt : 0;
+            const iva = chkRtm ? foundOpt.iva : 0;
+            const soat = chkSoat ? foundOpt.soat : 0;
+            const total = baseRtm + runtSicov + iva + soat;
+
+            const formatCOP = (num) => '$' + num.toLocaleString('es-CO');
+
+            document.getElementById('res-base-rtm').textContent = formatCOP(baseRtm);
+            document.getElementById('res-runt-sicov').textContent = formatCOP(runtSicov);
+            document.getElementById('res-iva').textContent = formatCOP(iva);
+            document.getElementById('res-soat').textContent = formatCOP(soat);
+            document.getElementById('res-total').textContent = formatCOP(total);
+        }
+
+        function quickSelectVehicle(type) {
+            setCotizadorType(type);
+            document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function transferQuoteToScheduler() {
+            playSound('success');
+            const catMap = { moto: 'Moto', particular: 'Particular', publico: 'Publico', pesado: 'Pesado' };
+            document.getElementById('sched-category').value = catMap[currentVehicleType] || 'Particular';
+            document.getElementById('agendamiento').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 4. MULTI-STEP APPOINTMENT SCHEDULER WIZARD ---
+        let currentSchedStep = 1;
+
+        function nextSchedStep(step) {
+            playSound('click');
+            if (step === 2) {
+                const plate = document.getElementById('sched-plate').value.trim();
+                if (!plate || plate.length < 5) {
+                    alert('Por favor ingresa una placa válida para continuar.');
+                    return;
+                }
+                generateTimeSlots();
+            }
+
+            document.getElementById(`sched-step-${currentSchedStep}`).classList.add('hidden');
+            document.getElementById(`sched-step-${step}`).classList.remove('hidden');
+
+            // Update Progress Bar
+            currentSchedStep = step;
+            const fillPct = (step === 1 ? '33%' : step === 2 ? '66%' : '100%');
+            document.getElementById('step-bar-fill').style.width = fillPct;
+
+            [1, 2, 3].forEach(s => {
+                const dot = document.getElementById(`step-dot-${s}`);
+                if (s <= step) {
+                    dot.className = 'w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center relative z-10 shadow-md';
+                } else {
+                    dot.className = 'w-9 h-9 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center relative z-10 shadow-md';
+                }
+            });
+        }
+
+        function generateTimeSlots() {
+            const grid = document.getElementById('time-slots-grid');
+            grid.innerHTML = '';
+            const times = ['07:30 AM', '08:15 AM', '09:00 AM', '10:30 AM', '11:15 AM', '02:00 PM', '03:15 PM', '04:30 PM'];
+
+            times.forEach((t, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `p-2.5 rounded-xl border text-xs font-bold transition-all ${idx === 1 ? 'border-emerald-500 bg-emerald-500 text-slate-950 shadow-md' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-500'}`;
+                btn.textContent = t;
+                btn.onclick = function() {
+                    playSound('click');
+                    grid.querySelectorAll('button').forEach(b => {
+                        b.className = 'p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-500 text-xs font-bold transition-all';
+                    });
+                    btn.className = 'p-2.5 rounded-xl border border-emerald-500 bg-emerald-500 text-slate-950 shadow-md text-xs font-bold transition-all';
+                    btn.dataset.selected = 'true';
+                };
+                if (idx === 1) btn.dataset.selected = 'true';
+                grid.appendChild(btn);
+            });
+
+            // Set default date if empty
+            const dateInput = document.getElementById('sched-date');
+            if (!dateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+
+        function submitAppointment() {
+            const name = document.getElementById('sched-name').value.trim();
+            const doc = document.getElementById('sched-doc').value.trim();
+            const phone = document.getElementById('sched-phone').value.trim();
+            const plate = document.getElementById('sched-plate').value.trim().toUpperCase();
+            const category = document.getElementById('sched-category').value;
+            const date = document.getElementById('sched-date').value;
+
+            if (!name || !doc || !phone) {
+                alert('Por favor completa todos tus datos personales de contacto.');
+                return;
+            }
+
+            playSound('success');
+
+            const receiptCard = document.getElementById('sched-receipt-card');
+            receiptCard.innerHTML = `
+                <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+                    <span class="font-bold text-emerald-600 dark:text-emerald-400">CÓDIGO DE RESERVA</span>
+                    <span class="font-mono font-bold text-slate-900 dark:text-white">CART-${Math.floor(100000 + Math.random() * 900000)}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <div><span class="text-slate-400">Placa:</span> <p class="font-bold font-mono">${plate}</p></div>
+                    <div><span class="text-slate-400">Categoría:</span> <p class="font-bold">${category}</p></div>
+                    <div><span class="text-slate-400">Titular:</span> <p class="font-bold">${name}</p></div>
+                    <div><span class="text-slate-400">Fecha Turno:</span> <p class="font-bold">${date}</p></div>
+                </div>
+            `;
+
+            document.getElementById(`sched-step-3`).classList.add('hidden');
+            document.getElementById(`sched-step-4`).classList.remove('hidden');
+        }
+
+        function resetSchedWizard() {
+            document.getElementById('sched-step-4').classList.add('hidden');
+            document.getElementById('sched-step-1').classList.remove('hidden');
+            currentSchedStep = 1;
+            document.getElementById('step-bar-fill').style.width = '33%';
+            [1, 2, 3].forEach(s => {
+                const dot = document.getElementById(`step-dot-${s}`);
+                dot.className = s === 1 ? 'w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center relative z-10 shadow-md' : 'w-9 h-9 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center relative z-10 shadow-md';
+            });
+        }
+
+        // --- 5. PLATE LOOKUP MOCK ENGINE ---
+        function handlePlateLookup(e) {
+            e.preventDefault();
+            playSound('click');
+            const plate = document.getElementById('lookup-plate-input').value.trim().toUpperCase();
+            if (!plate || plate.length < 5) {
+                alert('Ingresa una placa válida.');
+                return;
+            }
+
+            const resDiv = document.getElementById('plate-lookup-result');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = `
+                <div class="flex items-center gap-3 text-emerald-400 text-sm font-bold">
+                    <i class="fa-solid fa-spinner animate-spin"></i>
+                    <span>Consultando base de datos RUNT & CDA Cartago para ${plate}...</span>
+                </div>
+            `;
+
+            setTimeout(() => {
+                playSound('success');
+                resDiv.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-700 gap-2">
+                        <div>
+                            <span class="text-2xl font-mono font-black tracking-widest text-emerald-400">${plate}</span>
+                            <span class="ml-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">REGISTRO ACTIVO</span>
+                        </div>
+                        <span class="text-xs text-slate-400">Última actualización: Hoy</span>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4 text-xs pt-2">
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700">
+                            <p class="text-slate-400">Estado RTM:</p>
+                            <p class="text-emerald-400 font-bold text-sm">VIGENTE</p>
+                            <p class="text-[11px] text-slate-300">Vence: 18 de Noviembre de 2026</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-700">
+                            <p class="text-slate-400">Estado SOAT:</p>
+                            <p class="text-emerald-400 font-bold text-sm">VIGENTE</p>
+                            <p class="text-[11px] text-slate-300">Aseguradora: Previsora S.A.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex justify-end">
+                        <a href="#agendamiento" onclick="transferPlateToSchedule('${plate}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs hover:bg-emerald-400 transition-colors">
+                            Renovar o Agendar Cita
+                        </a>
+                    </div>
+                `;
+            }, 800);
+        }
+
+        function transferPlateToSchedule(plate) {
+            document.getElementById('sched-plate').value = plate;
+            document.getElementById('agendamiento').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 6. FLOATING AI CHATBOT INTEGRATED WITH NVIDIA API ---
+        let nvidiaKey = "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";
+        const NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
+        const MODEL_NAME = "meta/llama-3.1-70b-instruct";
+
+        const CHAT_SYSTEM_PROMPT = `Eres el asistente oficial con IA del CDA Cartago (Centro de Diagnóstico Automotor en Cartago, Valle del Cauca, Colombia).
+Tus responsabilidades:
+- Responder inquietudes sobre la Revisión Tecnomecánica (RTM) y el SOAT.
+- Tarifas aproximadas 2026: Moto RTM ~$233.500 + SOAT, Carro particular ~$357.500 + SOAT.
+- Ubicación: Variante Cartago - Zaragoza Km 1.5, Cartago, Valle del Cauca.
+- Horarios: Lunes a Viernes 7:00 AM - 5:30 PM, Sábados 7:00 AM - 3:00 PM.
+- Requisitos RTM: Licencia de tránsito (Matrícula), vehículo limpio, sin carga, alarma desactivada.
+Responde de forma amable, precisa, concisa y en español.`;
+
+        let chatMessages = [{ role: "system", content: CHAT_SYSTEM_PROMPT }];
+
+        function toggleChatWindow() {
+            playSound('click');
+            document.getElementById('chat-window').classList.toggle('hidden');
+            document.getElementById('chat-icon-open').classList.toggle('hidden');
+            document.getElementById('chat-icon-close').classList.toggle('hidden');
+        }
+
+        function toggleKeySettings() {
+            document.getElementById('key-settings-panel').classList.toggle('hidden');
+        }
+
+        function updateKey() {
+            const input = document.getElementById('key-input').value.trim();
+            if (input) {
+                nvidiaKey = input;
+                alert('API Key de NVIDIA actualizada.');
+                toggleKeySettings();
+            }
+        }
+
+        function sendQuickChip(text) {
+            document.getElementById('chat-input').value = text;
+            handleSendChatMessage(new Event('submit'));
+        }
+
+        async function handleSendChatMessage(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const message = inputEl.value.trim();
+            if (!message) return;
+
+            playSound('click');
+            appendChatMessage('user', message);
+            inputEl.value = '';
+            chatMessages.push({ role: "user", content: message });
+
+            const loadingId = appendLoadingBubble();
+
+            if (nvidiaKey) {
+                try {
+                    const res = await fetch(NVIDIA_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${nvidiaKey}`
+                        },
+                        body: JSON.stringify({
+                            model: MODEL_NAME,
+                            messages: chatMessages,
+                            temperature: 0.3,
+                            max_tokens: 350
+                        })
+                    });
+
+                    removeLoadingBubble(loadingId);
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const botReply = data.choices[0]?.message?.content || "Respuesta recibida sin contenido.";
+                        chatMessages.push({ role: "assistant", content: botReply });
+                        appendChatMessage('bot', botReply);
+                        playSound('chat');
+                        return;
+                    }
+                } catch (err) {
+                    console.warn("NVIDIA API call failed, falling back to rule engine:", err);
+                }
+            }
+
+            // Fallback response engine
+            removeLoadingBubble(loadingId);
+            const fallbackReply = generateFallbackReply(message);
+            appendChatMessage('bot', fallbackReply);
+            playSound('chat');
+        }
+
+        function generateFallbackReply(query) {
+            const q = query.toLowerCase();
+            if (q.includes('tarifa') || q.includes('precio') || q.includes('costo') || q.includes('cuanto')) {
+                return "💰 **Tarifas RTM 2026 en CDA Cartago:**\n- **Motos:** Desde $233.500\n- **Carros Particulares:** Desde $357.500\n- **Taxis / Públicos:** Desde $356.900\n\n¡Puedes usar el **Cotizador en Vivo** en esta misma página para calcular el total exacto con SOAT!";
+            }
+            if (q.includes('requisito') || q.includes('documento') || q.includes('llevar')) {
+                return "📋 **Requisitos para la Inspección RTM:**\n1. Licencia de tránsito (Matrícula) original.\n2. Vehículo en buen estado de limpieza y sin carga.\n3. Alarma desactivada al ingresar a la pista.";
+            }
+            if (q.includes('ubicacion') || q.includes('donde') || q.includes('direccion')) {
+                return "📍 Estamos ubicados en la **Variante Cartago - Zaragoza Km 1.5**, Cartago, Valle del Cauca (Frente a la EDS).";
+            }
+            if (q.includes('horario') || q.includes('abierto')) {
+                return "🕒 **Horario de Atención:**\nLunes a Viernes: 7:00 AM - 5:30 PM\nSábados: 7:00 AM - 3:00 PM.";
+            }
+            return "🤖 Gracias por contactar al **CDA Cartago**. Puedes agendar tu cita directa en nuestro menú superior o comunicarte al **(602) 211-0000**.";
+        }
+
+        function appendChatMessage(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex gap-2 items-start ${sender === 'user' ? 'justify-end' : ''}`;
+
+            if (sender === 'user') {
+                wrapper.innerHTML = `
+                    <div class="bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[82%]">
+                        ${escapeHTML(text)}
+                    </div>`;
+            } else {
+                wrapper.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-robot text-xs"></i>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-3 rounded-2xl rounded-tl-none max-w-[82%] border border-slate-200 dark:border-slate-700">
+                        ${formatMarkdown(text)}
+                    </div>`;
+            }
+
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendLoadingBubble() {
+            const container = document.getElementById('chat-messages');
+            const id = 'chat-loading-' + Date.now();
+            const wrapper = document.createElement('div');
+            wrapper.id = id;
+            wrapper.className = 'flex gap-2 items-start';
+            wrapper.innerHTML = `
+                <div class="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </div>`;
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeLoadingBubble(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+        }
+
+        function formatMarkdown(str) {
+            let html = escapeHTML(str);
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\n/g, '<br>');
+            return html;
+        }
+
+        // Initialize Cotizador on page load
+        window.onload = function() {
+            setCotizadorType('moto');
+        };
+    </script>
+</body>
+</html>
